@@ -2,43 +2,65 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3333',
-  headers: {
-    'Content-Type': 'application/json',
+  baseURL: 'http://localhost:3333/api',
+});
+
+// Interceptor de requisição
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('@iPass:token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
   },
-  withCredentials: true
-});
-
-// Interceptor para adicionar o token em todas as requisições
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('@iPass:token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  (error) => {
+    console.error('Erro na requisição:', error);
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
-// Interceptor para tratamento de erros
+// Interceptor de resposta
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('Erro na resposta:', error);
+
     if (!error.response) {
-      toast.error('Erro de conexão com o servidor. Verifique sua internet.');
+      toast.error('Erro de conexão. Verifique sua internet.');
       return Promise.reject(error);
     }
 
-    if (error.response.status === 401) {
-      localStorage.removeItem('@iPass:token');
-      localStorage.removeItem('@iPass:user');
-      
-      // Apenas redireciona para /login se não estiver já na página de login
-      if (!window.location.pathname.includes('/login')) {
-        window.location.href = '/login';
-      }
-    }
+    const { status, data } = error.response;
 
-    const errorMessage = error.response?.data?.error || 'Ocorreu um erro. Tente novamente.';
-    toast.error(errorMessage);
+    switch (status) {
+      case 400:
+        toast.error(data.message || 'Dados inválidos. Verifique os campos.');
+        break;
+      case 401:
+        toast.error('Sessão expirada. Por favor, faça login novamente.');
+        localStorage.removeItem('@iPass:token');
+        localStorage.removeItem('@iPass:user');
+        window.location.href = '/login';
+        break;
+      case 403:
+        toast.error('Você não tem permissão para realizar esta ação.');
+        break;
+      case 404:
+        toast.error('Recurso não encontrado.');
+        break;
+      case 422:
+        toast.error(data.message || 'Dados inválidos. Verifique os campos.');
+        break;
+      case 429:
+        toast.error('Muitas requisições. Por favor, aguarde um momento.');
+        break;
+      case 500:
+        toast.error('Erro interno do servidor. Tente novamente mais tarde.');
+        break;
+      default:
+        toast.error('Ocorreu um erro. Por favor, tente novamente.');
+    }
 
     return Promise.reject(error);
   }

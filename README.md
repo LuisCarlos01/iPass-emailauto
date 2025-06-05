@@ -8,6 +8,16 @@ iPass Email Auto é uma solução MVP (Minimum Viable Product) que automatiza re
 
 ## 📝 Changelog
 
+### [1.0.4] - 2024-01-05
+#### Melhorias no Tratamento de Erros
+- Implementado ErrorBoundary para captura de erros globais
+- Adicionado interceptor Axios para tratamento de erros de API
+- Melhorado feedback de erros com mensagens específicas
+- Implementado tratamento de erros de rede
+- Adicionado suporte a diferentes códigos de status HTTP
+- Melhorada UX durante erros com feedback visual
+- Implementado sistema de notificações toast para erros
+
 ### [1.0.3] - 2024-01-05
 #### Melhorias na Proteção de Rotas
 - Implementado sistema de controle de acesso baseado em roles
