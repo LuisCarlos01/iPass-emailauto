@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String?        // Opcional agora que temos autenticação Google
+  googleId      String?        @unique // ID do usuário no Google
+  avatar        String?        // URL da foto do perfil
+  role          UserRole       @default(USER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  rules         EmailRule[]
+  logs          EmailLog[]
+  emailSettings EmailSettings?
+
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model EmailRule {
+  id          String     @id @default(uuid())
+  name        String
+  type        String     @default("STANDARD")
+  fromEmail   String
+  subject     String?
+  body        String?
+  response    String
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  logs        EmailLog[]
+
+  @@map("email_rules")
+}
+
+model EmailLog {
+  id          String    @id @default(uuid())
+  fromEmail   String
+  subject     String?
+  body        String?
+  status      String
+  error       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  emailRuleId String?
+  emailRule   EmailRule? @relation(fields: [emailRuleId], references: [id])
+
+  @@map("email_logs")
+}
+
+model EmailSettings {
+  id           String   @id @default(uuid())
+  imapHost     String
+  imapPort     Int
+  imapUser     String
+  imapPassword String
+  smtpHost     String
+  smtpPort     Int
+  smtpUser     String
+  smtpPassword String
+  fromName     String
+  fromEmail    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_settings")
+}
