@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
+import { toast } from 'react-toastify';
+import jwtDecode from 'jwt-decode';
 
 interface User {
   id: string;
@@ -19,6 +21,11 @@ interface AuthContextData {
   signOut: () => void;
 }
 
+interface JwtPayload {
+  exp: number;
+  sub: string;
+}
+
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -26,16 +33,57 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem('@iPass:token');
-    const storedUser = localStorage.getItem('@iPass:user');
-
-    if (token && storedUser) {
-      api.defaults.headers.authorization = `Bearer ${token}`;
-      setUser(JSON.parse(storedUser));
+  const isTokenValid = (token: string): boolean => {
+    try {
+      const decoded = jwtDecode<JwtPayload>(token);
+      const currentTime = Date.now() / 1000;
+      return decoded.exp > currentTime;
+    } catch {
+      return false;
     }
+  };
 
-    setLoading(false);
+  const validateSession = async (token: string): Promise<boolean> => {
+    try {
+      await api.get('/auth/validate', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const token = localStorage.getItem('@iPass:token');
+      const storedUser = localStorage.getItem('@iPass:user');
+
+      if (token && storedUser) {
+        if (!isTokenValid(token)) {
+          console.log('AuthContext - Token expirado');
+          signOut();
+          toast.error('Sessão expirada. Por favor, faça login novamente.');
+          return;
+        }
+
+        const isSessionValid = await validateSession(token);
+        if (!isSessionValid) {
+          console.log('AuthContext - Sessão inválida');
+          signOut();
+          toast.error('Sessão inválida. Por favor, faça login novamente.');
+          return;
+        }
+
+        console.log('AuthContext - Token válido, restaurando sessão');
+        api.defaults.headers.authorization = `Bearer ${token}`;
+        setUser(JSON.parse(storedUser));
+      }
+
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -57,6 +105,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     console.log('AuthContext - Iniciando signInWithGoogle');
     console.log('AuthContext - Token recebido:', token);
     console.log('AuthContext - Dados do usuário:', userData);
+
+    if (!isTokenValid(token)) {
+      console.error('AuthContext - Token inválido ou expirado');
+      toast.error('Token inválido ou expirado. Por favor, tente novamente.');
+      return;
+    }
 
     api.defaults.headers.authorization = `Bearer ${token}`;
     console.log('AuthContext - Token definido no header da API');

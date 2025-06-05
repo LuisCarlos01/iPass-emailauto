@@ -1,7 +1,8 @@
 import { Router, Request } from 'express';
 import passport from '../config/passport';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { config } from '../config';
+import { authMiddleware } from '../middlewares/auth';
 
 interface User {
   id: string;
@@ -20,6 +21,21 @@ interface RequestWithSession extends Request {
 }
 
 const authRoutes = Router();
+
+// Rota para validar token
+authRoutes.get('/validate', authMiddleware, (req, res) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    if (!token) {
+      return res.status(401).json({ error: 'Token não fornecido' });
+    }
+
+    verify(token, config.jwtSecret);
+    return res.status(200).json({ valid: true });
+  } catch (error) {
+    return res.status(401).json({ error: 'Token inválido' });
+  }
+});
 
 // Rota para iniciar autenticação com Google
 authRoutes.get('/google',
