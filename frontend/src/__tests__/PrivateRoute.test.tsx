@@ -103,18 +103,10 @@ describe('PrivateRoute Component', () => {
       user: null,
     });
 
-    const mockLocationWithToken = {
+    // Sobrescreve o mock do useLocation apenas para este teste
+    vi.mocked(useLocation).mockReturnValueOnce({
       ...mockLocation,
       search: '?token=test-token',
-    };
-
-    vi.mock('react-router-dom', async () => {
-      const actual = await vi.importActual('react-router-dom');
-      return {
-        ...actual,
-        useLocation: () => mockLocationWithToken,
-        Navigate: ({ to }: { to: string }) => <div data-testid="navigate" data-to={to} />,
-      };
     });
 
     render(

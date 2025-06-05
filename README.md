@@ -6,6 +6,24 @@ Sistema automatizado de resposta a e-mails baseado em regras personalizáveis.
 
 iPass Email Auto é uma solução MVP (Minimum Viable Product) que automatiza respostas a e-mails com base em regras predefinidas. O sistema utiliza autenticação Google OAuth2 para garantir segurança e facilidade de acesso.
 
+## 🧪 Testes
+
+O projeto utiliza Vitest e Testing Library para testes automatizados. Para executar os testes:
+
+```bash
+# Executar todos os testes
+npm run test
+
+# Executar testes com interface visual
+npm run test:ui
+
+# Executar testes com cobertura
+npm run test:coverage
+
+# Executar testes em modo watch
+npm run test:watch
+```
+
 ## 📝 Changelog
 
 ### [1.0.5] - 2024-01-05
@@ -57,21 +75,25 @@ iPass Email Auto é uma solução MVP (Minimum Viable Product) que automatiza re
 
 ## 🛠️ Tecnologias Utilizadas
 
-### Backend
-- Node.js
-- Express
-- TypeScript
-- Prisma (ORM)
-- Passport.js (Autenticação Google)
-- JWT (Tokens)
-
 ### Frontend
 - React
 - TypeScript
 - Tailwind CSS
-- React Query
 - React Router DOM
 - Axios
+- React Toastify
+- JWT Decode
+- Vitest
+- Testing Library
+
+### Backend
+- Node.js
+- Express
+- TypeScript
+- Prisma
+- Passport.js
+- JWT
+- Google OAuth2
 
 ## 📋 Pré-requisitos
 
@@ -82,36 +104,31 @@ iPass Email Auto é uma solução MVP (Minimum Viable Product) que automatiza re
 
 ## 🔧 Instalação
 
-1. Clone o repositório
+1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/iPass-emailauto.git
+git clone https://github.com/LuisCarlos01/iPass-emailauto.git
 cd iPass-emailauto
 ```
 
-2. Instale as dependências do backend
+2. Instale as dependências do backend:
 ```bash
 cd backend
 npm install
 ```
 
-3. Configure as variáveis de ambiente do backend
+3. Configure as variáveis de ambiente:
 ```bash
 cp .env.example .env
 # Edite o arquivo .env com suas configurações
 ```
 
-4. Execute as migrações do banco de dados
-```bash
-npx prisma migrate dev
-```
-
-5. Instale as dependências do frontend
+4. Instale as dependências do frontend:
 ```bash
 cd ../frontend
 npm install
 ```
 
-6. Configure as variáveis de ambiente do frontend
+5. Configure as variáveis de ambiente do frontend:
 ```bash
 cp .env.example .env
 # Edite o arquivo .env com suas configurações
@@ -119,26 +136,31 @@ cp .env.example .env
 
 ## 🚀 Executando o Projeto
 
-1. Inicie o backend
+1. Inicie o backend:
 ```bash
 cd backend
 npm run dev
 ```
 
-2. Inicie o frontend
+2. Em outro terminal, inicie o frontend:
 ```bash
 cd frontend
 npm run dev
 ```
 
-## 🔐 Configuração do Google OAuth2
+3. Acesse o projeto em `http://localhost:5173`
 
-1. Acesse o [Google Cloud Console](https://console.cloud.google.com)
-2. Crie um novo projeto ou selecione um existente
-3. Configure as credenciais OAuth2
-4. Adicione as URLs de redirecionamento:
-   - http://localhost:3333/api/auth/google/callback (desenvolvimento)
-   - https://seu-dominio.com/api/auth/google/callback (produção)
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'feat: Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ## 📦 Estrutura do Projeto
 
