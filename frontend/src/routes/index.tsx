@@ -9,6 +9,7 @@ import { EmailRules } from '../pages/EmailRules';
 import { EmailLogs } from '../pages/EmailLogs';
 import { Settings } from '../pages/Settings';
 import { PrivateRoute } from '../components/PrivateRoute';
+import { NotFound } from '../pages/NotFound';
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -26,6 +27,14 @@ export function AppRoutes() {
       />
 
       {/* Rotas privadas */}
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/dashboard"
         element={
@@ -53,15 +62,14 @@ export function AppRoutes() {
       <Route
         path="/settings"
         element={
-          <PrivateRoute>
+          <PrivateRoute requiredRole="admin">
             <Settings />
           </PrivateRoute>
         }
       />
 
       {/* Rota padrão */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 } 

@@ -8,6 +8,15 @@ iPass Email Auto é uma solução MVP (Minimum Viable Product) que automatiza re
 
 ## 📝 Changelog
 
+### [1.0.3] - 2024-01-05
+#### Melhorias na Proteção de Rotas
+- Implementado sistema de controle de acesso baseado em roles
+- Adicionada verificação de permissões por rota
+- Melhorado feedback visual durante verificação de autenticação
+- Adicionadas notificações para acesso não autorizado
+- Implementada página 404 personalizada
+- Melhorada UX durante carregamento de rotas protegidas
+
 ### [1.0.2] - 2024-01-05
 #### Melhorias na Persistência de Login
 - Adicionada validação de token JWT
