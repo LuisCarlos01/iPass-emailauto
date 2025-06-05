@@ -10,6 +10,7 @@ import { EmailLogs } from '../pages/EmailLogs';
 import { Settings } from '../pages/Settings';
 import { PrivateRoute } from '../components/PrivateRoute';
 import { NotFound } from '../pages/NotFound';
+import { AuthCallback } from '../pages/AuthCallback';
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -25,6 +26,8 @@ export function AppRoutes() {
         path="/register"
         element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />}
       />
+      <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path="/auth/error" element={<Navigate to="/login" replace />} />
 
       {/* Rotas privadas */}
       <Route
