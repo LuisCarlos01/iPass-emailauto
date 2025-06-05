@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { toast } from 'react-toastify';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 interface User {
   id: string;
@@ -103,8 +103,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = (token: string, userData: User) => {
     console.log('AuthContext - Iniciando signInWithGoogle');
-    console.log('AuthContext - Token recebido:', token);
-    console.log('AuthContext - Dados do usuário:', userData);
+    
+    if (!token || !userData) {
+      console.error('AuthContext - Token ou dados do usuário ausentes');
+      toast.error('Dados de autenticação incompletos');
+      return;
+    }
 
     if (!isTokenValid(token)) {
       console.error('AuthContext - Token inválido ou expirado');
@@ -112,16 +116,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    api.defaults.headers.authorization = `Bearer ${token}`;
-    console.log('AuthContext - Token definido no header da API');
-    
-    setUser(userData);
-    console.log('AuthContext - Usuário definido no estado');
-    
-    setTimeout(() => {
-      console.log('AuthContext - Redirecionando para /dashboard');
-      navigate('/dashboard');
-    }, 100);
+    try {
+      // Configura o token na API
+      api.defaults.headers.authorization = `Bearer ${token}`;
+      console.log('AuthContext - Token definido no header da API');
+      
+      // Atualiza o estado do usuário
+      setUser(userData);
+      console.log('AuthContext - Usuário definido no estado:', userData);
+      
+      // Força o redirecionamento
+      navigate('/dashboard', { replace: true });
+    } catch (error) {
+      console.error('AuthContext - Erro ao processar login com Google:', error);
+      toast.error('Erro ao processar login');
+      navigate('/login');
+    }
   };
 
   // Efeito para redirecionamento após autenticação
