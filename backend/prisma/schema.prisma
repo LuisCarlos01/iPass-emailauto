@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,78 +11,67 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
+  id            String    @id @default(uuid())
+  email         String    @unique
   name          String
-  email         String         @unique
-  password      String?        // Opcional agora que temos autenticação Google
-  googleId      String?        @unique // ID do usuário no Google
-  avatar        String?        // URL da foto do perfil
-  role          UserRole       @default(USER)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  rules         EmailRule[]
-  logs          EmailLog[]
-  emailSettings EmailSettings?
-
-  @@map("users")
+  role          String    @default("user")
+  avatar        String?
+  accessToken   String?
+  refreshToken  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  rules         Rule[]
 }
 
-enum UserRole {
-  USER
-  ADMIN
-}
-
-model EmailRule {
-  id          String     @id @default(uuid())
+model Rule {
+  id          String        @id @default(uuid())
   name        String
-  type        String     @default("STANDARD")
-  fromEmail   String
-  subject     String?
-  body        String?
-  response    String
-  isActive    Boolean    @default(true)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  description String?
+  isActive    Boolean       @default(true)
+  priority    Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   userId      String
-  user        User       @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id])
+  conditions  Condition[]
+  actions     Action[]
   logs        EmailLog[]
+}
 
-  @@map("email_rules")
+model Condition {
+  id          String   @id @default(uuid())
+  field       String   // from, to, subject, body
+  operator    String   // contains, equals, startsWith, endsWith, matches
+  value       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  ruleId      String
+  rule        Rule     @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+}
+
+model Action {
+  id          String   @id @default(uuid())
+  type        String   // reply, forward, archive, label
+  template    String?  // Template para resposta
+  to          String?  // Email para encaminhamento
+  label       String?  // Label para aplicar
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  ruleId      String
+  rule        Rule     @relation(fields: [ruleId], references: [id], onDelete: Cascade)
 }
 
 model EmailLog {
-  id          String    @id @default(uuid())
-  fromEmail   String
-  subject     String?
-  body        String?
-  status      String
+  id          String   @id @default(uuid())
+  messageId   String   @unique
+  from        String
+  to          String
+  subject     String
+  body        String
+  status      String   // processed, pending, error
   error       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  emailRuleId String?
-  emailRule   EmailRule? @relation(fields: [emailRuleId], references: [id])
-
-  @@map("email_logs")
-}
-
-model EmailSettings {
-  id           String   @id @default(uuid())
-  imapHost     String
-  imapPort     Int
-  imapUser     String
-  imapPassword String
-  smtpHost     String
-  smtpPort     Int
-  smtpUser     String
-  smtpPassword String
-  fromName     String
-  fromEmail    String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  userId       String   @unique
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("email_settings")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  ruleId      String?
+  rule        Rule?    @relation(fields: [ruleId], references: [id])
 }

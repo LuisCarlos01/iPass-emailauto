@@ -1,89 +1,53 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import { PrismaClient } from '@prisma/client';
-import EmailMonitor from '../services/EmailMonitor';
+import { Request, Response } from 'express';
+import EmailMonitorService from '../services/EmailMonitorService';
 
-const prisma = new PrismaClient();
-const monitors = new Map<string, EmailMonitor>();
+class EmailMonitorController {
+  async startMonitoring(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id;
+      const accessToken = req.user?.accessToken;
 
-export async function startMonitoring(request: FastifyRequest, reply: FastifyReply) {
-  try {
-    const userId = (request.user as any).id;
-
-    // Verifica se já existe um monitor para este usuário
-    if (monitors.has(userId)) {
-      return reply.status(400).send({ error: 'Monitoramento já está ativo para este usuário' });
-    }
-
-    // Busca as configurações de e-mail do usuário
-    const emailSettings = await prisma.emailSettings.findUnique({
-      where: { userId }
-    });
-
-    if (!emailSettings) {
-      return reply.status(400).send({ error: 'Configurações de e-mail não encontradas' });
-    }
-
-    // Cria e inicia o monitor
-    const monitor = new EmailMonitor(emailSettings);
-    await monitor.startMonitoring();
-    
-    // Armazena o monitor na memória
-    monitors.set(userId, monitor);
-
-    return reply.send({ message: 'Monitoramento iniciado com sucesso' });
-  } catch (error) {
-    console.error('Erro ao iniciar monitoramento:', error);
-    return reply.status(500).send({ error: 'Erro ao iniciar monitoramento' });
-  }
-}
-
-export async function stopMonitoring(request: FastifyRequest, reply: FastifyReply) {
-  try {
-    const userId = (request.user as any).id;
-
-    // Verifica se existe um monitor para este usuário
-    const monitor = monitors.get(userId);
-    if (!monitor) {
-      return reply.status(400).send({ error: 'Nenhum monitoramento ativo para este usuário' });
-    }
-
-    // Para o monitor e remove da memória
-    await monitor.stopMonitoring();
-    monitors.delete(userId);
-
-    return reply.send({ message: 'Monitoramento parado com sucesso' });
-  } catch (error) {
-    console.error('Erro ao parar monitoramento:', error);
-    return reply.status(500).send({ error: 'Erro ao parar monitoramento' });
-  }
-}
-
-export async function getMonitoringStatus(request: FastifyRequest, reply: FastifyReply) {
-  try {
-    const userId = (request.user as any).id;
-    const isActive = monitors.has(userId);
-
-    // Busca os logs recentes
-    const recentLogs = await prisma.emailLog.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      take: 10,
-      include: {
-        emailRule: {
-          select: {
-            name: true,
-            fromEmail: true
-          }
-        }
+      if (!userId || !accessToken) {
+        return res.status(401).json({ error: 'Unauthorized' });
       }
-    });
 
-    return reply.send({
-      isActive,
-      recentLogs
-    });
-  } catch (error) {
-    console.error('Erro ao buscar status do monitoramento:', error);
-    return reply.status(500).send({ error: 'Erro ao buscar status do monitoramento' });
+      await EmailMonitorService.startMonitoring(userId, accessToken);
+      return res.json({ message: 'Email monitoring started' });
+    } catch (error) {
+      console.error('Error starting email monitoring:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
   }
-} 
+
+  async stopMonitoring(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      EmailMonitorService.stopMonitoring(userId);
+      return res.json({ message: 'Email monitoring stopped' });
+    } catch (error) {
+      console.error('Error stopping email monitoring:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  async getStatus(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const isMonitoring = EmailMonitorService.isMonitoring(userId);
+      return res.json({ isMonitoring });
+    } catch (error) {
+      console.error('Error getting monitoring status:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+}
+
+export default new EmailMonitorController(); 
