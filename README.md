@@ -6,6 +6,17 @@ Sistema automatizado de resposta a e-mails baseado em regras personalizáveis.
 
 iPass Email Auto é uma solução MVP (Minimum Viable Product) que automatiza respostas a e-mails com base em regras predefinidas. O sistema utiliza autenticação Google OAuth2 para garantir segurança e facilidade de acesso.
 
+## 📝 Changelog
+
+### [1.0.1] - 2024-01-05
+#### Melhorias na Autenticação
+- Adicionado feedback visual durante o processo de login
+- Implementado indicadores de carregamento nos botões
+- Melhorado tratamento de erros com mensagens mais descritivas
+- Adicionadas notificações toast para feedback do usuário
+- Desabilitado campos de entrada durante o processo de autenticação
+- Adicionado ícone do Google no botão de login social
+
 ## 🛠️ Tecnologias Utilizadas
 
 ### Backend
