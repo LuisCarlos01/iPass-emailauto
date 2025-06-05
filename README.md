@@ -8,6 +8,16 @@ iPass Email Auto é uma solução MVP (Minimum Viable Product) que automatiza re
 
 ## 📝 Changelog
 
+### [1.0.5] - 2024-01-05
+#### Implementação de Testes Automatizados
+- Configurado ambiente de testes com Vitest e Testing Library
+- Implementados testes para o componente de Login
+- Implementados testes para o componente PrivateRoute
+- Implementados testes para o ErrorBoundary
+- Adicionada cobertura de testes com relatórios
+- Configurado ambiente de testes com mocks
+- Adicionados scripts de teste no package.json
+
 ### [1.0.4] - 2024-01-05
 #### Melhorias no Tratamento de Erros
 - Implementado ErrorBoundary para captura de erros globais
