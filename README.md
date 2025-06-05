@@ -1,40 +1,43 @@
 # iPass Email Auto
 
-Sistema automatizado de resposta a e-mails baseado em regras personalizáveis.
-
-## 🚀 Sobre o Projeto
-
-iPass Email Auto é uma solução MVP (Minimum Viable Product) que automatiza respostas a e-mails com base em regras predefinidas. O sistema utiliza autenticação Google OAuth2 para garantir segurança e facilidade de acesso.
-
-## 🧪 Testes
-
-O projeto utiliza Vitest e Testing Library para testes automatizados. Para executar os testes:
-
-```bash
-# Executar todos os testes
-npm run test
-
-# Executar testes com interface visual
-npm run test:ui
-
-# Executar testes com cobertura
-npm run test:coverage
-
-# Executar testes em modo watch
-npm run test:watch
-```
+Sistema de automação de respostas de e-mail com integração ao Gmail.
 
 ## 📝 Changelog
 
+### [1.0.8] - 2024-01-07
+#### Melhorias na Autenticação e Rotas
+- Implementado callback de autenticação OAuth2
+- Melhorado sistema de rotas com proteção
+- Atualizado contexto de autenticação
+- Corrigido página de NotFound
+- Atualizado dependências do projeto
+- Melhorado feedback visual no login
+
+### [1.0.7] - 2024-01-06
+#### Implementação do Sistema de Automação de E-mails
+- Implementado sistema de regras de automação
+- Adicionado processador de e-mails em tempo real
+- Implementado monitoramento automático da caixa de entrada
+- Adicionado sistema de logs detalhados
+- Melhorada integração com Gmail API
+- Implementada gestão de tokens OAuth2
+- Adicionado rate limiting para proteção da API
+
+### [1.0.6] - 2024-01-05
+#### Atualização da Documentação
+- Adicionadas instruções de teste
+- Melhorado README.md
+- Documentada estrutura do projeto
+- Atualizadas instruções de instalação
+
 ### [1.0.5] - 2024-01-05
 #### Implementação de Testes Automatizados
-- Configurado ambiente de testes com Vitest e Testing Library
+- Configurado ambiente com Vitest e Testing Library
 - Implementados testes para o componente de Login
 - Implementados testes para o componente PrivateRoute
 - Implementados testes para o ErrorBoundary
-- Adicionada cobertura de testes com relatórios
-- Configurado ambiente de testes com mocks
-- Adicionados scripts de teste no package.json
+- Adicionada cobertura de testes
+- Configurados mocks para testes
 
 ### [1.0.4] - 2024-01-05
 #### Melhorias no Tratamento de Erros
@@ -42,154 +45,172 @@ npm run test:watch
 - Adicionado interceptor Axios para tratamento de erros de API
 - Melhorado feedback de erros com mensagens específicas
 - Implementado tratamento de erros de rede
-- Adicionado suporte a diferentes códigos de status HTTP
-- Melhorada UX durante erros com feedback visual
-- Implementado sistema de notificações toast para erros
 
 ### [1.0.3] - 2024-01-05
 #### Melhorias na Proteção de Rotas
-- Implementado sistema de controle de acesso baseado em roles
-- Adicionada verificação de permissões por rota
-- Melhorado feedback visual durante verificação de autenticação
-- Adicionadas notificações para acesso não autorizado
-- Implementada página 404 personalizada
-- Melhorada UX durante carregamento de rotas protegidas
+- Implementado controle de acesso baseado em roles
+- Adicionada verificação de permissões
+- Criada página 404 personalizada
+- Melhorado feedback durante carregamento
 
 ### [1.0.2] - 2024-01-05
 #### Melhorias na Persistência de Login
 - Adicionada validação de token JWT
-- Implementada verificação de expiração do token
-- Adicionada rota de validação de sessão no backend
+- Implementada verificação de expiração
+- Criada rota de validação de sessão
 - Melhorado tratamento de sessões inválidas
-- Adicionadas notificações para problemas de autenticação
-- Implementada lógica de refresh automático da sessão
 
 ### [1.0.1] - 2024-01-05
 #### Melhorias na Autenticação
-- Adicionado feedback visual durante o processo de login
-- Implementado indicadores de carregamento nos botões
-- Melhorado tratamento de erros com mensagens mais descritivas
-- Adicionadas notificações toast para feedback do usuário
-- Desabilitado campos de entrada durante o processo de autenticação
-- Adicionado ícone do Google no botão de login social
+- Implementado feedback visual no processo de login
+- Adicionados indicadores de carregamento
+- Melhorado tratamento de erros
+- Implementadas notificações toast
+- Adicionado ícone do Google no botão de login
 
-## 🛠️ Tecnologias Utilizadas
+## Funcionalidades
+
+### Autenticação
+- Login com Google OAuth2
+- Persistência de sessão com JWT
+- Proteção de rotas baseada em roles
+
+### Regras de Automação
+- Criação e gerenciamento de regras personalizadas
+- Condições flexíveis (remetente, destinatário, assunto, corpo)
+- Múltiplas ações por regra (responder, encaminhar, arquivar, rotular)
+- Priorização de regras
+- Ativação/desativação de regras
+
+### Processamento de E-mails
+- Monitoramento automático da caixa de entrada
+- Processamento em tempo real de novos e-mails
+- Execução de ações baseadas em regras
+- Log detalhado de todas as operações
+
+## Tecnologias
+
+### Backend
+- Node.js com Express
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Google Gmail API
+- JWT para autenticação
+- Zod para validação
+- Rate Limiting
+- Morgan para logs
 
 ### Frontend
 - React
 - TypeScript
 - Tailwind CSS
-- React Router DOM
-- Axios
-- React Toastify
-- JWT Decode
-- Vitest
-- Testing Library
+- React Query
+- React Router
+- React Hook Form
+- Zod para validação
 
-### Backend
-- Node.js
-- Express
-- TypeScript
-- Prisma
-- Passport.js
-- JWT
-- Google OAuth2
+## Configuração
 
-## 📋 Pré-requisitos
-
-- Node.js (v18 ou superior)
-- npm ou yarn
-- PostgreSQL
-- Conta Google Cloud Platform (para OAuth2)
-
-## 🔧 Instalação
-
-1. Clone o repositório:
+1. Clone o repositório
 ```bash
-git clone https://github.com/LuisCarlos01/iPass-emailauto.git
+git clone https://github.com/seu-usuario/iPass-emailauto.git
 cd iPass-emailauto
 ```
 
-2. Instale as dependências do backend:
+2. Instale as dependências
 ```bash
+# Backend
 cd backend
 npm install
-```
 
-3. Configure as variáveis de ambiente:
-```bash
-cp .env.example .env
-# Edite o arquivo .env com suas configurações
-```
-
-4. Instale as dependências do frontend:
-```bash
+# Frontend
 cd ../frontend
 npm install
 ```
 
-5. Configure as variáveis de ambiente do frontend:
+3. Configure as variáveis de ambiente
 ```bash
+# Backend
+cp .env.example .env
+# Edite o arquivo .env com suas configurações
+
+# Frontend
 cp .env.example .env
 # Edite o arquivo .env com suas configurações
 ```
 
-## 🚀 Executando o Projeto
-
-1. Inicie o backend:
+4. Execute as migrações do banco de dados
 ```bash
 cd backend
-npm run dev
+npx prisma migrate dev
 ```
 
-2. Em outro terminal, inicie o frontend:
+5. Inicie os servidores
 ```bash
+# Backend
+cd backend
+npm run dev
+
+# Frontend
 cd frontend
 npm run dev
 ```
 
-3. Acesse o projeto em `http://localhost:5173`
+## Uso
 
-## 🤝 Contribuindo
+1. Faça login com sua conta Google
+2. Configure suas regras de automação:
+   - Defina condições de correspondência
+   - Configure ações automáticas
+   - Estabeleça prioridades
+3. Inicie o monitoramento
+4. Acompanhe os logs de processamento
 
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'feat: Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📝 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 📦 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
-iPass-emailauto/
+.
 ├── backend/
+│   ├── prisma/
+│   │   └── schema.prisma    # Modelos do banco de dados
 │   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── routes/
-│   │   └── services/
-│   └── prisma/
+│   │   ├── controllers/     # Controladores da API
+│   │   ├── services/        # Lógica de negócio
+│   │   ├── routes/          # Rotas da API
+│   │   └── middlewares/     # Middlewares
+│   └── package.json
+│
 └── frontend/
     ├── src/
-    │   ├── components/
-    │   ├── contexts/
-    │   ├── pages/
-    │   └── services/
-    └── public/
+    │   ├── components/      # Componentes React
+    │   ├── contexts/        # Contextos React
+    │   ├── hooks/           # Hooks personalizados
+    │   ├── pages/           # Páginas da aplicação
+    │   └── services/        # Serviços de API
+    └── package.json
 ```
 
-## 🔄 Versão
+## Contribuição
 
-- Versão atual: 1.0.0 (MVP)
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Faça commit das suas alterações (`git commit -m 'feat: adiciona nova feature'`)
+4. Faça push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
 
-## 👥 Autores
+## Licença
 
-* **Seu Nome** - *Trabalho Inicial* - [seu-usuario](https://github.com/seu-usuario)
+Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 📄 Licença
+## Autor
 
-Este projeto está sob a licença MIT - veja o arquivo [LICENSE.md](LICENSE.md) para detalhes 
+Seu Nome - [@seu-usuario](https://github.com/seu-usuario)
+
+## Agradecimentos
+
+- Google Gmail API
+- Prisma
+- React
+- Express
+- E todas as outras bibliotecas utilizadas 
